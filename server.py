@@ -343,7 +343,7 @@ class SoloLatinoTask:
         try:
             with sync_playwright() as pw:
                 self._prog("Iniciando navegador...")
-                self.browser = pw.chromium.launch(args=PW_ARGS, headless=True)
+                self.browser = pw.chromium.launch(args=PW_ARGS, headless=False)
                 self.page = self.browser.new_page(
                     user_agent=UA,
                     viewport={"width": 1920, "height": 1080}
@@ -550,26 +550,30 @@ class SoloLatinoTask:
     # ── EPISODIO (iframe con autoplay) ───────────────────────────────
     def _episode(self, page):
         url = SOLOLATINO + self.kw['url']
-        self._prog("Cargando episodio...")
+        self._prog(f"Cargando episodio: {url}...")
         page.goto(url, wait_until="domcontentloaded", timeout=30000)
-        page.wait_for_timeout(4000)
+        page.wait_for_timeout(5000)
+        
+        # Print current URL for debugging
+        current_url = page.url
+        self._prog(f"URL actual: {current_url}")
 
         # Try to click the play button if it exists
         try:
             play_btn = page.locator('button.play-button, .play-btn, [class*="play"], .btn-play').first
             if play_btn.is_visible(timeout=3000):
                 play_btn.click(timeout=5000)
-                page.wait_for_timeout(2000)
+                page.wait_for_timeout(3000)
                 self._prog("Play button clicked")
-        except:
-            self._prog("No play button found, continuing...")
+        except Exception as e:
+            self._prog(f"No play button found or error: {e}, continuing...")
 
         # Wait a bit more for the iframe to load after clicking play
-        page.wait_for_timeout(3000)
+        page.wait_for_timeout(4000)
         
-        embed = self._wait_for_iframe(page, 18)
+        embed = self._wait_for_iframe(page, 25)
         if not embed:
-            raise Exception("No se encontro el reproductor del episodio")
+            raise Exception(f"No se encontro el reproductor del episodio. URL: {current_url}")
 
         with jobs_lock:
             jobs[self.job_id].update({"state": "done", "embed_url": embed})
@@ -657,9 +661,21 @@ def latino_series():
 
 @app.route('/api/cuevana-episode', methods=['POST'])
 def latino_episode():
-    u = (request.json or {}).get('url', '').strip()
-    if not u: return jsonify({"error": "URL vacia"}), 400
-    return jsonify({"job_id": _latino_job("episode", url=u)})
+    data = request.json or {}
+    series_url = data.get('series_url', '').strip()
+    season = data.get('season', '1')
+    episode = data.get('episode', '1')
+    
+    if not series_url:
+        # Fallback to old behavior with url parameter
+        u = data.get('url', '').strip()
+        if not u:
+            return jsonify({"error": "URL vacia"}), 400
+        return jsonify({"job_id": _latino_job("episode", url=u)})
+    
+    # Format the episode URL properly
+    formatted_url = _format_sololatino_episode_url(series_url, season, episode)
+    return jsonify({"job_id": _latino_job("episode", url=formatted_url)})
 
 @app.route('/api/history')
 def get_history():
