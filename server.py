@@ -336,6 +336,21 @@ class SoloLatinoTask:
                     Object.defineProperty(navigator, 'webdriver', {get: () => false});
                     Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
                 }""")
+                
+                # Block ads and trackers at the request level
+                def handle_route(route):
+                    url = route.request.url.lower()
+                    # Block common ad/tracker domains and unnecessary resources
+                    block_patterns = [
+                        'doubleclick.net', 'adservice.google', 'googlesyndication', 'google-analytics',
+                        'analytics.', 'tracking.', 'adsystem', 'adserver', 'advertise', 'sponsor',
+                        '.xml', 'fonts.gstatic'
+                    ]
+                    if any(p in url for p in block_patterns):
+                        return route.abort()
+                    return route.continue_()
+                
+                page.route("**/*", handle_route)
 
                 if self.action == "search":
                     self._search(self.page)
@@ -516,12 +531,22 @@ class SoloLatinoTask:
                 "seasons": seasons
             })
 
-    # ── EPISODIO (iframe) ───────────────────────────────
+    # ── EPISODIO (iframe con autoplay) ───────────────────────────────
     def _episode(self, page):
         url = SOLOLATINO + self.kw['url']
         self._prog("Cargando episodio...")
         page.goto(url, wait_until="domcontentloaded", timeout=30000)
         page.wait_for_timeout(4000)
+
+        # Try to click the play button if it exists
+        try:
+            play_btn = page.locator('button.play-button, .play-btn, [class*="play"], .btn-play').first
+            if play_btn.is_visible(timeout=3000):
+                play_btn.click(timeout=5000)
+                page.wait_for_timeout(2000)
+                self._prog("Play button clicked")
+        except:
+            self._prog("No play button found, continuing...")
 
         embed = self._wait_for_iframe(page, 18)
         if not embed:
