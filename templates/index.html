@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BautiAI NEXUS - Películas y Series Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#000;--bg2:#080808;--bg3:#111;--bg4:#1a1a1a;
+            --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.1);--border3:rgba(255,255,255,.15);
+            --gold:#d4a853;--gold-dim:rgba(212,168,83,.15);--red:#e74c3c;--red-dim:rgba(231,76,60,.15);
+            --calidad:#10b981;--calidad-dim:rgba(16,185,129,.15);
+            --text:#f0f0f0;--text2:#ccc;--muted:#666;--dim:#444;--error:#e74c3c;--success:#2ecc71
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+        body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes fadeOut{to{opacity:0;transform:translateY(10px)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .page{position:relative;z-index:1;min-height:100vh}
+        .header{background:rgba(0,0,0,.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+        .header-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:16px 28px}
+        .logo{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:2px;display:flex;align-items:center;gap:10px}
+        .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px rgba(212,168,83,.3)}
+        .hero{max-width:1400px;margin:0 auto;padding:50px 28px 20px;text-align:center}
+        .hero-eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block;animation:fadeUp .6s ease both}
+        .hero-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:10px;animation:fadeUp .6s ease .1s both}
+        .hero-sub{color:var(--muted);font-size:.92rem;font-weight:300;max-width:420px;margin:0 auto;animation:fadeUp .6s ease .2s both}
+        .search-wrap{max-width:900px;margin:36px auto 0;padding:0 28px;animation:fadeUp .6s ease .3s both}
+        .search-box{display:flex;gap:0;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;overflow:hidden;transition:all .3s}
+        .search-box:focus-within{border-color:rgba(212,168,83,.4);box-shadow:0 0 30px rgba(212,168,83,.08)}
+        .search-input{flex:1;padding:16px 20px;background:transparent;border:none;color:var(--text);font-family:'Inter',sans-serif;font-size:.95rem;outline:none;min-width:0}
+        .search-input::placeholder{color:var(--dim)}
+        .search-select{padding:16px 14px;background:transparent;border:none;border-left:1px solid var(--border);color:var(--text2);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;cursor:pointer;min-width:120px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+        .search-select option{background:var(--bg3);color:var(--text)}
+        .search-btn{padding:16px 28px;background:var(--gold);color:#000;border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;transition:all .2s;white-space:nowrap}
+        .search-btn:hover:not(:disabled){background:#e0b85e;transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,83,.25)}
+        .search-btn:disabled{opacity:.3;cursor:not-allowed}
+        .source-toggle{display:flex;gap:0;margin:0 auto 8px;width:fit-content;border-radius:10px;overflow:hidden;border:1px solid var(--border2);animation:fadeUp .6s ease .25s both}
+        .src-btn{padding:10px 22px;background:transparent;color:var(--muted);border:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.75rem;cursor:pointer;text-transform:uppercase;letter-spacing:.1em;transition:all .2s}
+        .src-btn:hover{color:var(--text2)}
+        .src-btn.active{background:var(--gold);color:#000}
+        .src-btn.latino.active{background:var(--red);color:#fff}
+        .src-btn.calidad.active{background:var(--calidad);color:#fff}
+        .status-bar{max-width:900px;margin:12px auto 0;padding:0 28px}
+        .status{font-size:.85rem;min-height:24px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
+        .status.error{color:var(--error)}
+        .status.success{color:var(--success)}
+        .spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--gold);animation:spin .7s linear infinite;flex-shrink:0}
+        .content{max-width:1200px;margin:0 auto;padding:0 28px}
+        .detail-bar{display:none;margin-top:28px;background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:24px;animation:slideIn .3s ease;gap:24px;align-items:center}
+        .detail-bar.visible{display:flex;flex-wrap:wrap}
+        .detail-poster{width:90px;height:135px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--bg4)}
+        .detail-poster img{width:100%;height:100%;object-fit:cover}
+        .detail-info{flex:1;min-width:200px}
+        .detail-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.15rem;margin-bottom:6px;color:#fff}
+        .detail-meta{font-size:.78rem;color:var(--muted);margin-bottom:10px;display:flex;gap:12px;flex-wrap:wrap}
+        .detail-meta span{color:var(--text2)}
+        .detail-meta .sep{color:var(--dim)}
+        .detail-meta .vote-star{color:var(--gold)}
+        .detail-plot{font-size:.84rem;color:var(--muted);line-height:1.6;max-height:66px;overflow:hidden}
+        .detail-actions{display:flex;gap:10px;flex-shrink:0}
+        .play-btn{padding:12px 28px;border-radius:10px;border:none;background:var(--gold);color:#000;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s;white-space:nowrap}
+        .play-btn:hover{background:#e0b85e;transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,168,83,.25)}
+        .play-btn.series{background:var(--red);color:#fff}
+        .play-btn.series:hover{background:#c0392b;box-shadow:0 8px 24px rgba(231,76,60,.25)}
+        .play-btn.calidad-play{background:var(--calidad);color:#fff}
+        .play-btn.calidad-play:hover{background:#059669;box-shadow:0 8px 24px rgba(16,185,129,.25)}
+        .play-btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+        .results-area{display:none;margin-top:32px}
+        .results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+        .results-count{font-size:.8rem;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+        .results-count strong{color:var(--gold)}
+        .pagination{display:flex;gap:6px}
+        .page-btn{padding:8px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.78rem;transition:all .2s}
+        .page-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+        .page-btn:disabled{opacity:.2;cursor:not-allowed}
+        .page-btn.current{background:var(--gold-dim);color:var(--gold);border-color:rgba(212,168,83,.3)}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px}
+        .card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;position:relative}
+        .card:hover{border-color:var(--border3);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+        .card-poster{width:100%;aspect-ratio:2/3;background:var(--bg4);overflow:hidden;position:relative}
+        .card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+        .card:hover .card-poster img{transform:scale(1.06)}
+        .card-poster::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(transparent,rgba(0,0,0,.6));pointer-events:none}
+        .card-badge{position:absolute;top:10px;left:10px;font-size:.58rem;font-weight:700;padding:3px 9px;border-radius:4px;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.08em;z-index:2}
+        .card-badge.movie{background:var(--gold);color:#000}
+        .card-badge.series{background:var(--red);color:#fff}
+        .card-badge.latino{background:var(--red);color:#fff}
+        .card-badge.calidad{background:var(--calidad);color:#fff}
+        .card-year{position:absolute;top:10px;right:10px;font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:4px;background:rgba(0,0,0,.7);color:rgba(255,255,255,.75);font-family:'Space Grotesk',sans-serif;z-index:2;backdrop-filter:blur(4px)}
+        .card-info{padding:12px 14px;border-top:1px solid var(--border);background:var(--bg2)}
+        .card-title{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+        .card-sub{font-size:.6rem;color:var(--muted);margin-top:4px;font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px}
+        .card-sub .dot{width:3px;height:3px;border-radius:50%;background:var(--dim)}
+        .card-sub .vote-star{color:var(--gold)}
+        .player-wrap{display:none;margin-top:28px;animation:fadeUp .4s ease}
+        .player-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+        .back-btn{padding:9px 18px;background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.8rem;text-transform:uppercase;transition:all .2s}
+        .back-btn:hover{border-color:var(--gold);color:var(--gold)}
+        .player-label{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.95rem;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .source-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .source-text{font-size:.65rem;color:var(--dim);font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:.08em}
+        .source-btn{padding:8px 16px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,83,.2);border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.75rem;text-transform:uppercase;transition:all .2s;white-space:nowrap}
+        .source-btn:hover{background:rgba(212,168,83,.25);border-color:rgba(212,168,83,.4)}
+        .ep-controls{display:none;gap:6px}
+        .ep-controls.visible{display:flex}
+        .ep-btn{padding:8px 14px;background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.75rem;text-transform:uppercase;transition:all .2s}
+        .ep-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+        .ep-btn:disabled{opacity:.2;cursor:not-allowed}
+        .source-err{margin-top:10px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 18px;background:rgba(231,76,60,.06);border:1px solid rgba(231,76,60,.15);border-radius:10px;font-size:.78rem;color:var(--error);animation:slideIn .3s ease}
+        .source-err.hidden{display:none}
+        .source-err strong{color:#fff}
+        .source-err button{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,83,.2);padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.7rem;text-transform:uppercase;transition:all .2s}
+        .source-err button:hover{background:rgba(212,168,83,.25)}
+        .video-box{position:relative;width:100%;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.8);border:1px solid var(--border)}
+        .video-box iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+        .video-box .v-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(0,0,0,.95);z-index:5;transition:opacity .5}
+        .video-box .v-load.hidden{opacity:0;pointer-events:none}
+        .video-box .v-load span{color:var(--muted);font-size:.85rem;font-weight:300}
+        .video-box .v-load .spinner{width:24px;height:24px;border-width:2px;border-color:var(--border2);border-top-color:var(--gold)}
+        .ep-panel{display:none;margin-top:24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:fadeUp .3s ease}
+        .ep-panel.visible{display:block}
+        .ep-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg3);flex-wrap:wrap;gap:10px}
+        .ep-top-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.95rem;color:#fff}
+        .ep-top-right{display:flex;gap:8px;align-items:center}
+        .ep-nav{padding:7px 14px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.72rem;text-transform:uppercase;transition:all .2s}
+        .ep-nav:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+        .ep-nav:disabled{opacity:.15;cursor:not-allowed}
+        .ep-close{padding:7px 12px;border-radius:8px;border:1px solid rgba(231,76,60,.2);background:transparent;color:var(--error);cursor:pointer;font-size:.85rem;transition:all .15s}
+        .ep-close:hover{background:rgba(231,76,60,.08)}
+        .season-row{display:flex;gap:4px;padding:12px 16px 0;overflow-x:auto}
+        .season-row::-webkit-scrollbar{height:2px}
+        .season-row::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+        .s-tab{padding:10px 20px;border-radius:10px 10px 0 0;border:1px solid var(--border);border-bottom:none;background:var(--bg);color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.78rem;transition:all .2s;white-space:nowrap}
+        .s-tab:hover{color:var(--text2)}
+        .s-tab.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(212,168,83,.25)}
+        .ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:6px;padding:16px;max-height:280px;overflow-y:auto;border-top:1px solid var(--border)}
+        .ep-grid::-webkit-scrollbar{width:3px}
+        .ep-grid::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px}
+        .ep-cell{display:flex;flex-direction:column}
+        .ep-num{padding:10px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:.82rem;text-align:center;transition:all .15s}
+        .ep-num:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+        .ep-num.on{background:var(--gold);color:#000;border-color:var(--gold);box-shadow:0 0 16px rgba(212,168,83,.25)}
+        .ep-name{font-size:.62rem;color:var(--dim);text-align:center;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px}
+        .cue-ep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:16px;max-height:400px;overflow-y:auto;border-top:1px solid var(--border)}
+        .cue-ep-card{display:flex;gap:12px;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .2s;align-items:center}
+        .cue-ep-card:hover{border-color:var(--red);background:var(--red-dim)}
+        .cue-ep-card.on{border-color:var(--red);background:var(--red-dim)}
+        .cue-ep-thumb{width:80px;height:50px;border-radius:6px;overflow:hidden;flex-shrink:0;background:var(--bg4)}
+        .cue-ep-thumb img{width:100%;height:100%;object-fit:cover}
+        .cue-ep-info{flex:1;min-width:0}
+        .cue-ep-title{font-size:.78rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .cue-ep-label{font-size:.65rem;color:var(--muted);margin-top:2px}
+        .empty{text-align:center;padding:60px 20px;color:var(--dim);font-size:.9rem;grid-column:1/-1}
+        .empty-icon{font-size:2rem;margin-bottom:12px;display:block}
+        .toast{position:fixed;bottom:28px;right:28px;padding:14px 22px;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-size:.85rem;z-index:1000;animation:slideIn .3s ease;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+        .toast.hide{animation:fadeOut .3s ease forwards}
+        .footer{border-top:1px solid var(--border);padding:24px;text-align:center;color:var(--dim);font-size:.72rem;margin-top:60px;letter-spacing:.04em}
+        .footer a{color:var(--gold);text-decoration:none;transition:color .2s}
+        .footer a:hover{color:#e0b85e}
+        @media(max-width:768px){
+            .header-inner{padding:12px 16px}
+            .hero{padding:40px 16px 16px}
+            .search-wrap{padding:0 16px}
+            .content{padding:0 16px}
+            .grid{grid-template-columns:repeat(3,1fr);gap:12px}
+            .search-box{flex-wrap:wrap;border-radius:12px}
+            .search-input{width:100%;padding:14px 16px}
+            .search-select{width:100%;border-left:none;border-top:1px solid var(--border)}
+            .search-btn{width:100%;padding:14px}
+            .detail-bar{flex-direction:column;text-align:center}
+            .detail-actions{width:100%;justify-content:center}
+            .source-wrap{width:100%;justify-content:center}
+            .player-top{justify-content:center}
+            .cue-ep-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+            .src-btn{padding:10px 14px;font-size:.65rem}
+        }
+        @media(max-width:480px){
+            .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+            .card-info{padding:10px}
+            .card-title{font-size:.76rem}
+            .ep-grid{grid-template-columns:repeat(auto-fill,minmax(40px,1fr))}
+            .cue-ep-grid{grid-template-columns:1fr}
+            .cue-ep-thumb{width:60px;height:40px}
+            .source-btn{font-size:.68rem;padding:6px 10px}
+        }
+        @media(prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo"><span class="logo-dot"></span>BAUTIAI NEXUS</div>
+        </div>
+    </header>
+    <div class="hero">
+        <span class="hero-eyebrow">🎬 Películas y Series</span>
+        <h1 class="hero-title">Streaming Online Premium</h1>
+        <p class="hero-sub">Subtitulado, Latino o Calidad HD — Busca y disfruta lo que quieras</p>
+    </div>
+    <div class="search-wrap">
+        <div class="source-toggle">
+            <button class="src-btn active" id="srcSub">Subtitulado</button>
+            <button class="src-btn latino" id="srcLat">Latino</button>
+            <button class="src-btn calidad" id="srcCal">Calidad</button>
+        </div>
+        <div class="search-box">
+            <input type="text" id="movieSearch" class="search-input" placeholder="Buscar titulo, actor, director..." autofocus>
+            <select id="movieTypeFilter" class="search-select">
+                <option value="">Todos</option>
+                <option value="movie">Películas</option>
+                <option value="series">Series</option>
+            </select>
+            <button id="movieSearchBtn" class="search-btn">🔍 Buscar</button>
+        </div>
+    </div>
+    <div class="status-bar"><div id="movieStatus" class="status" aria-live="polite"></div></div>
+    <div class="content">
+        <div id="movieDetailBar" class="detail-bar">
+            <div class="detail-poster"><img id="detailPoster" src="" alt="Poster"></div>
+            <div class="detail-info">
+                <div class="detail-title" id="detailTitle"></div>
+                <div class="detail-meta" id="detailMeta"></div>
+                <div class="detail-plot" id="detailPlot"></div>
+            </div>
+            <div class="detail-actions"><button id="detailPlayBtn" class="play-btn">▶ Ver Ahora</button></div>
+        </div>
+        <div id="movieResultsArea" class="results-area">
+            <div class="results-header">
+                <span class="results-count" id="movieResultsCount"></span>
+                <div class="pagination" id="moviePagination"></div>
+            </div>
+            <div class="grid" id="movieGrid"></div>
+        </div>
+        <div id="episodePanel" class="ep-panel">
+            <div class="ep-top">
+                <span class="ep-top-title" id="epPanelTitle"></span>
+                <div class="ep-top-right">
+                    <button class="ep-nav" id="epPrevSeason" disabled>◀ Ant.</button>
+                    <button class="ep-nav" id="epNextSeason" disabled>Sig. ▶</button>
+                    <button class="ep-close" id="epCloseBtn">✕</button>
+                </div>
+            </div>
+            <div class="season-row" id="seasonTabs"></div>
+            <div class="ep-grid" id="episodesGrid"></div>
+        </div>
+        <div id="cueEpPanel" class="ep-panel">
+            <div class="ep-top">
+                <span class="ep-top-title" id="cueEpTitle"></span>
+                <div class="ep-top-right">
+                    <button class="ep-nav" id="cuePrevS" disabled>◀ Ant. Temp</button>
+                    <button class="ep-nav" id="cueNextS" disabled>Sig. Temp ▶</button>
+                    <button class="ep-close" id="cueCloseEpBtn">✕</button>
+                </div>
+            </div>
+            <div class="season-row" id="cueSeasonTabs"></div>
+            <div class="cue-ep-grid" id="cueEpGrid"></div>
+        </div>
+        <div id="moviePlayer" class="player-wrap">
+            <div class="player-top">
+                <button id="movieBackBtn" class="back-btn">◀ Volver</button>
+                <span class="player-label" id="playerTitle"></span>
+                <div class="source-wrap" id="srcWrap">
+                    <span class="source-text">Fuente</span>
+                    <button id="sourceSwitchBtn" class="source-btn"><span id="sourceName">2Embed</span> ▶</button>
+                </div>
+                <div class="ep-controls" id="playerEpControls">
+                    <button class="ep-btn" id="prevEpBtn">◀ Anterior</button>
+                    <button class="ep-btn" id="nextEpBtn">Siguiente ▶</button>
+                </div>
+            </div>
+            <div id="sourceBar" class="source-err hidden"></div>
+            <div class="video-box">
+                <div class="v-load" id="embedLoading"><div class="spinner"></div><span>Cargando reproductor...</span></div>
+                <iframe id="movieIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="origin"></iframe>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">&copy; 2026 BautiAI NEXUS &bull; <a href="https://github.com/bauti1823xd">GitHub</a> &bull; <a href="https://bautiai.ccwu.cc">Web</a></footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ var m = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}; return String(s).replace(/[&<>"']/g, function(c){ return m[c]; }); }
+function toast(msg, dur){ dur = dur || 2500; var old = document.querySelector('.toast'); if(old) old.remove(); var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(function(){ t.classList.add('hide'); t.addEventListener('animationend', function(){ t.remove(); }); }, dur); }
+function setStatus(el, msg, type){ if(!el) return; el.className = 'status' + (type === 'error' ? ' error' : type === 'success' ? ' success' : ''); el.innerHTML = type === 'loading' ? '<div class="spinner"></div> ' + esc(msg) : (msg || ''); }
+
+var mode = 'sub';
+var cuevanaOk = false;
+var sd = null;
+var st = null;
+var sq = '', sp = 1, stot = 0, stp = 1, sty = '', sres = [], dc = {};
+var cueResults = [], cueEps = [], cueSeasons = [], cueCurSeason = 1, cueCurEp = 1, cueBaseUrl = '';
+var curSrc = 0;
+var movieIframe = $('movieIframe'), embedLoading = $('embedLoading'), sourceBar = $('sourceBar');
+
+/* ═══ MODE TOGGLE ═══ */
+function clearModeBtns(){ ['srcSub','srcLat','srcCal'].forEach(function(id){ var btn = $(id); if(btn) btn.classList.remove('active'); }); }
+$('srcSub').addEventListener('click', function(){ mode = 'sub'; clearModeBtns(); this.classList.add('active'); var f = $('movieTypeFilter'); if(f) f.style.display = ''; hideAll(); setStatus($('movieStatus'), '', ''); });
+$('srcLat').addEventListener('click', function(){ mode = 'latino'; clearModeBtns(); this.classList.add('active'); var f = $('movieTypeFilter'); if(f) f.style.display = 'none'; hideAll(); setStatus($('movieStatus'), '', ''); });
+$('srcCal').addEventListener('click', function(){ mode = 'calidad'; clearModeBtns(); this.classList.add('active'); var f = $('movieTypeFilter'); if(f) f.style.display = ''; hideAll(); setStatus($('movieStatus'), '', ''); });
+fetch('/api/cuevana-status').then(function(r){ return r.json(); }).then(function(d){ cuevanaOk = d.available; if(!cuevanaOk) { var lat = $('srcLat'); if(lat) lat.style.display = 'none'; } }).catch(function(){});
+
+/* ═══ EMBED SOURCES ═══ */
+var EMBED_SRC = [
+    {name:'2Embed', type:'2embed'},
+    {name:'VidSrc.to', type:'vidsrc', base:'https://vidsrc.to/embed'},
+    {name:'AutoEmbed', type:'vidsrc', base:'https://player.autoembed.cc/embed'},
+    {name:'VidSrc.xyz', type:'vidsrc', base:'https://vidsrc.xyz/embed'},
+    {name:'VidSrc.cc', type:'vidsrc', base:'https://vidsrc.cc/embed'},
+    {name:'VidSrc.icu', type:'vidsrc', base:'https://vidsrc.icu/embed'}
+];
+
+function buildSubUrl(i, imdbId, s, e){
+    var src = EMBED_SRC[i];
+    if(src.type === '2embed'){
+        if(s !== undefined && e !== undefined) return '/embed/tv/' + imdbId + '?s=' + s + '&e=' + e;
+        return '/embed/movie/' + imdbId;
+    }
+    var b = src.base;
+    if(s !== undefined && e !== undefined) return b + '/tv/' + imdbId + '/' + s + '/' + e;
+    return b + '/movie/' + imdbId;
+}
+
+function buildSuperEmbedUrl(tmdbId, season, episode){
+    var url = 'https://multiembed.mov/directstream.php?video_id=' + tmdbId + '&tmdb=1';
+    if(season !== undefined && episode !== undefined){
+        url += '&s=' + season + '&e=' + episode;
+    }
+    return url;
+}
+
+function loadEmbed(id, s, e){
+    embedLoading.classList.remove('hidden');
+    sourceBar.classList.add('hidden');
+
+    if(mode === 'calidad'){
+        movieIframe.removeAttribute('sandbox');
+        var url = buildSuperEmbedUrl(id, s, e);
+        $('sourceName').textContent = 'SuperEmbed';
+        var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none';
+        movieIframe.src = 'about:blank';
+        movieIframe.src = url;
+        var vt = setTimeout(function(){
+            if(!embedLoading.classList.contains('hidden')){
+                embedLoading.classList.add('hidden');
+                sourceBar.classList.remove('hidden');
+                sourceBar.innerHTML = '&#9888; <strong>SuperEmbed no respondio.</strong> El contenido puede no estar disponible.';
+            }
+        }, 25000);
+        movieIframe.onload = function(){ clearTimeout(vt); setTimeout(function(){ embedLoading.classList.add('hidden'); }, 1500); };
+        return;
+    }
+
+    var src = EMBED_SRC[curSrc];
+    if(src.type !== '2embed') movieIframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+    else movieIframe.removeAttribute('sandbox');
+    var url = buildSubUrl(curSrc, id, s, e);
+    $('sourceName').textContent = src.name;
+    var wrap = $('srcWrap'); if(wrap) wrap.style.display = '';
+    movieIframe.src = 'about:blank';
+    movieIframe.src = url;
+    var st2 = setTimeout(function(){ if(!embedLoading.classList.contains('hidden')) showSubErr(); }, 15000);
+    movieIframe.onload = function(){ clearTimeout(st2); setTimeout(function(){ embedLoading.classList.add('hidden'); }, 1500); };
+    movieIframe.onerror = function(){ clearTimeout(st2); showSubErr(); };
+}
+
+function showSubErr(){
+    embedLoading.classList.add('hidden');
+    if(curSrc < EMBED_SRC.length - 1){
+        var next = EMBED_SRC[curSrc + 1].name;
+        sourceBar.classList.remove('hidden');
+        sourceBar.innerHTML = '&#9888; <strong>' + esc(EMBED_SRC[curSrc].name) + ' no respondio.</strong> <button id="sourceNextBtn">Probar ' + esc(next) + ' &#9654;</button>';
+    } else {
+        sourceBar.classList.remove('hidden');
+        sourceBar.innerHTML = '&#9888; <strong>Ninguna fuente respondio. Intenta más tarde.</strong>';
+    }
+}
+
+function switchSub(){
+    if(mode !== 'sub') return;
+    if(!st && !sd) return;
+    var imdbId = st ? st.imdbID : (sd ? sd.imdbID : null);
+    if(!imdbId){ toast('Sin IMDb ID — usa modo Calidad'); return; }
+    var se = st ? {season: st.season, episode: st.episode} : null;
+    curSrc = (curSrc + 1) % EMBED_SRC.length;
+    loadEmbed(imdbId, se ? se.season : undefined, se ? se.episode : undefined);
+    toast('Fuente: ' + EMBED_SRC[curSrc].name);
+}
+$('sourceSwitchBtn').addEventListener('click', switchSub);
+$('sourceBar').addEventListener('click', function(ev){ if(ev.target && ev.target.id === 'sourceNextBtn') switchSub(); });
+
+function loadCuevanaEmbed(url){
+    movieIframe.removeAttribute('sandbox');
+    $('sourceName').textContent = 'Cuevana';
+    var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none';
+    var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible');
+    movieIframe.src = 'about:blank';
+    embedLoading.classList.remove('hidden');
+    sourceBar.classList.add('hidden');
+    movieIframe.src = url;
+    var t = setTimeout(function(){
+        if(!embedLoading.classList.contains('hidden')){
+            embedLoading.classList.add('hidden');
+            sourceBar.classList.remove('hidden');
+            sourceBar.innerHTML = '&#9888; <strong>Cuevana no respondio.</strong>';
+        }
+    }, 20000);
+    movieIframe.onload = function(){ clearTimeout(t); setTimeout(function(){ embedLoading.classList.add('hidden'); }, 1500); };
+}
+
+/* ═══ SEARCH ═══ */
+$('movieSearchBtn').addEventListener('click', function(){ if(mode === 'latino'){ doCuevanaSearch(); return; } doSearch(); });
+$('movieSearch').addEventListener('keypress', function(e){ if(e.key === 'Enter'){ if(mode === 'latino') doCuevanaSearch(); else doSearch(); } });
+var filter = $('movieTypeFilter'); if(filter) filter.addEventListener('change', function(){ if(mode !== 'latino'){ sp = 1; doSearch(); } });
+
+function doSearch(){
+    var q = $('movieSearch').value.trim();
+    if(!q){ setStatus($('movieStatus'), 'Escribe algo para buscar', 'error'); return; }
+    sq = q; sty = $('movieTypeFilter').value || ''; sp = 1;
+    hideAll(); $('movieSearchBtn').disabled = true;
+    setStatus($('movieStatus'), 'Buscando...', 'loading');
+    var u = '/api/tmdb-search?q=' + encodeURIComponent(q) + '&page=' + sp;
+    if(sty) u += '&type=' + sty;
+    fetch(u).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){
+        $('movieSearchBtn').disabled = false;
+        if(d && d.success){ sres = d.results || []; stot = d.total || 0; stp = d.total_pages || 1; setStatus($('movieStatus'), ''); renderGrid(); }
+        else { setStatus($('movieStatus'), (d && d.error) || 'Sin resultados', 'error'); $('movieResultsArea').style.display = 'none'; }
+    })
+    .catch(function(e){ $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); });
+}
+
+function goPage(){
+    var u = '/api/tmdb-search?q=' + encodeURIComponent(sq) + '&page=' + sp;
+    if(sty) u += '&type=' + sty;
+    fetch(u).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){
+        $('movieSearchBtn').disabled = false;
+        if(d && d.success){ sres = d.results || []; stot = d.total || 0; stp = d.total_pages || 1; setStatus($('movieStatus'), ''); renderGrid(); }
+        else { setStatus($('movieStatus'), (d && d.error) || 'Error', 'error'); }
+    })
+    .catch(function(e){ $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); });
+}
+
+function renderGrid(){
+    var grid = $('movieGrid'); grid.innerHTML = '';
+    if(!sres || !sres.length){
+        $('movieResultsArea').style.display = 'block';
+        $('movieResultsCount').innerHTML = '<strong>0</strong> resultados';
+        $('moviePagination').innerHTML = '';
+        grid.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span>No se encontraron resultados</div>';
+        return;
+    }
+    $('movieResultsCount').innerHTML = '<strong>' + stot + '</strong> resultados &middot; Página ' + sp + ' de ' + stp;
+    $('moviePagination').innerHTML = '';
+    if(sp > 1){
+        var b = document.createElement('button'); b.className = 'page-btn'; b.textContent = '◀ Anterior';
+        b.addEventListener('click', function(){ sp--; hideAll(); setStatus($('movieStatus'), 'Buscando...', 'loading'); $('movieSearchBtn').disabled = true; goPage(); });
+        $('moviePagination').appendChild(b);
+    }
+    var c = document.createElement('button'); c.className = 'page-btn current'; c.textContent = sp;
+    $('moviePagination').appendChild(c);
+    if(sp < stp){
+        var n = document.createElement('button'); n.className = 'page-btn'; n.textContent = 'Siguiente ▶';
+        n.addEventListener('click', function(){ sp++; hideAll(); setStatus($('movieStatus'), 'Buscando...', 'loading'); $('movieSearchBtn').disabled = true; goPage(); });
+        $('moviePagination').appendChild(n);
+    }
+    sres.forEach(function(it){
+        var cd = document.createElement('div'); cd.className = 'card';
+        var tp2 = it.type || 'movie';
+        var bc, bt;
+        if(mode === 'calidad'){ bc = 'calidad'; bt = tp2 === 'series' ? 'SERIE' : 'PELÍCULA'; }
+        else { bc = tp2 === 'series' ? 'series' : 'movie'; bt = tp2 === 'series' ? 'SERIE' : 'PELÍCULA'; }
+        var h = '<div class="card-poster">';
+        if(it.poster) h += '<img src="' + esc(it.poster) + '" alt="' + esc(it.title) + '" loading="lazy">';
+        else h += '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--dim);font-size:2rem">🎬</div>';
+        h += '</div><div class="card-badge ' + bc + '">' + bt + '</div>';
+        if(it.year) h += '<div class="card-year">' + esc(it.year) + '</div>';
+        h += '<div class="card-info"><div class="card-title" title="' + esc(it.title) + '">' + esc(it.title) + '</div>';
+        h += '<div class="card-sub"><span>' + esc(tp2) + '</span>';
+        if(it.year) h += '<span class="dot"></span><span>' + esc(it.year) + '</span>';
+        if(it.vote > 0) h += '<span class="dot"></span><span class="vote-star">★ ' + it.vote.toFixed(1) + '</span>';
+        h += '</div></div>';
+        cd.innerHTML = h;
+        cd.addEventListener('click', function(){ showDetail(it); });
+        grid.appendChild(cd);
+    });
+    $('movieResultsArea').style.display = 'block';
+}
+
+/* ═══ DETAIL ═══ */
+function showDetail(it){
+    if(!it.tmdb_id) return;
+    $('movieDetailBar').classList.add('visible');
+    $('detailPoster').src = it.poster || '';
+    $('detailPoster').style.display = it.poster ? 'block' : 'none';
+    $('detailTitle').textContent = it.title || '...';
+    $('detailMeta').innerHTML = '<span>' + esc(it.year || '') + '</span> <span class="sep">•</span> <span>' + esc((it.type || '').toUpperCase()) + '</span>';
+    if(it.vote > 0) $('detailMeta').innerHTML += ' <span class="sep">•</span> <span class="vote-star">★ ' + it.vote.toFixed(1) + '</span>';
+    $('detailPlot').textContent = 'Cargando...';
+    $('detailPlayBtn').style.display = 'none';
+    if(dc[it.tmdb_id]){ applyDetail(dc[it.tmdb_id]); return; }
+    fetch('/api/tmdb-detail?tmdb_id=' + it.tmdb_id + '&media_type=' + (it.type || 'movie'))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if(!d || !d.success || !d.detail){ $('detailPlot').textContent = 'Sin detalles disponibles.'; return; }
+        dc[it.tmdb_id] = d.detail;
+        applyDetail(d.detail);
+    }).catch(function(e){ $('detailPlot').textContent = 'Error al cargar detalles.'; });
+}
+
+function applyDetail(d){
+    sd = d;
+    $('detailPoster').src = d.Poster || '';
+    $('detailPoster').style.display = d.Poster ? 'block' : 'none';
+    $('detailTitle').textContent = d.Title || '';
+    var mp = [];
+    if(d.Year) mp.push(d.Year);
+    if(d.Runtime) mp.push(d.Runtime);
+    if(d.Genre) mp.push(d.Genre);
+    if(d.Vote > 0) mp.push('<span class="vote-star">★ ' + d.Vote.toFixed(1) + '</span>');
+    $('detailMeta').innerHTML = mp.map(function(p){ return '<span>' + p + '</span>'; }).join(' <span class="sep">•</span> ');
+    $('detailPlot').textContent = d.Plot || '';
+    var isSeries = d.Type === 'series';
+    $('detailPlayBtn').textContent = isSeries ? '▶ Episodios' : '▶ Ver Ahora';
+    var cls = 'play-btn';
+    if(isSeries) cls += ' series';
+    else if(mode === 'calidad') cls += ' calidad-play';
+    $('detailPlayBtn').className = cls;
+    $('detailPlayBtn').disabled = false;
+    $('detailPlayBtn').style.display = '';
+    $('detailPlayBtn').onclick = function(){
+        if(isSeries) openEpisodes(d);
+        else if(mode === 'calidad') playCalidadMovie(d);
+        else playSubMovie(d);
+    };
+}
+
+function playSubMovie(d){
+    if(!d.imdbID){ toast('Sin IMDb ID — usa modo Calidad'); return; }
+    hideAll(); $('moviePlayer').style.display = 'block'; curSrc = 0;
+    $('sourceName').textContent = EMBED_SRC[0].name; var wrap = $('srcWrap'); if(wrap) wrap.style.display = '';
+    $('playerTitle').textContent = d.Title + (d.Year ? ' (' + d.Year + ')' : '');
+    var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); st = null;
+    setStatus($('movieStatus'), '', '');
+    loadEmbed(d.imdbID);
+}
+
+function playCalidadMovie(d){
+    if(!d.tmdb_id) return;
+    hideAll(); $('moviePlayer').style.display = 'block';
+    $('sourceName').textContent = 'SuperEmbed';
+    var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none';
+    $('playerTitle').textContent = d.Title + (d.Year ? ' (' + d.Year + ')' : '');
+    var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); st = null;
+    setStatus($('movieStatus'), '', '');
+    loadEmbed(d.tmdb_id);
+}
+
+/* ═══ EPISODES ═══ */
+function openEpisodes(d){
+    hideAll();
+    st = {
+        tmdbID: d.tmdb_id,
+        imdbID: d.imdbID || '',
+        title: d.Title,
+        season: 1, episode: 1,
+        totalSeasons: d.totalSeasons || 1,
+        allEps: {}
+    };
+    $('episodePanel').classList.add('visible');
+    $('epPanelTitle').textContent = d.Title + (d.totalSeasons ? ' (' + d.totalSeasons + ' temporadas)' : '');
+    updateSeasonNav(); loadSeason(1);
+}
+
+function updateSeasonNav(){ if(!st) return; $('epPrevSeason').disabled = st.season <= 1; $('epNextSeason').disabled = st.season >= st.totalSeasons; }
+
+function loadSeason(n){
+    if(!st) return; st.season = n; st.episode = 1;
+    updateSeasonNav(); renderSeasonTabs();
+    if(st.allEps[n]){ renderEpGrid(st.allEps[n]); return; }
+    $('episodesGrid').innerHTML = '<div class="empty" style="grid-column:1/-1;padding:30px"><div class="spinner" style="margin:0 auto 10px"></div>Cargando episodios...</div>';
+    fetch('/api/tmdb-episodes?tmdb_id=' + st.tmdbID + '&season=' + n)
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+        if(d && d.success){ if(d.totalSeasons) st.totalSeasons = d.totalSeasons; st.allEps[n] = d.episodes || []; renderSeasonTabs(); renderEpGrid(st.allEps[n]); }
+        else { st.allEps[n] = []; $('episodesGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Sin episodios disponibles</div>'; }
+    })
+    .catch(function(){ st.allEps[n] = []; $('episodesGrid').innerHTML = '<div class="empty" style="grid-column:1/-1">Error de conexión</div>'; });
+}
+
+function renderSeasonTabs(){
+    var tabs = $('seasonTabs'); tabs.innerHTML = ''; if(!st) return;
+    for(var i = 1; i <= st.totalSeasons; i++){
+        var t = document.createElement('button'); t.className = 's-tab' + (i === st.season ? ' active' : ''); t.textContent = 'Temporada ' + i; t.dataset.s = i;
+        t.addEventListener('click', function(){ loadSeason(parseInt(this.dataset.s)); });
+        tabs.appendChild(t);
+    }
+}
+
+function renderEpGrid(eps){
+    var grid = $('episodesGrid'); grid.innerHTML = '';
+    if(!eps || !eps.length){ grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Sin episodios</div>'; return; }
+    eps.forEach(function(ep){
+        var cell = document.createElement('div'); cell.className = 'ep-cell';
+        var btn = document.createElement('button');
+        btn.className = 'ep-num' + (parseInt(ep.Episode) === st.episode ? ' on' : '');
+        btn.textContent = 'E' + ep.Episode; btn.title = ep.Title || '';
+        btn.addEventListener('click', (function(num, title){ return function(){ playEpisode(num, title); }; })(parseInt(ep.Episode), ep.Title || ''));
+        cell.appendChild(btn);
+        if(ep.Title){ var label = document.createElement('div'); label.className = 'ep-name'; label.textContent = ep.Title; cell.appendChild(label); }
+        grid.appendChild(cell);
+    });
+}
+
+function playEpisode(num, title){
+    if(!st) return; st.episode = num;
+    $('episodePanel').classList.remove('visible');
+    $('moviePlayer').style.display = 'block';
+    if(mode === 'calidad'){
+        $('sourceName').textContent = 'SuperEmbed';
+        var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none';
+        loadEmbed(st.tmdbID, st.season, num);
+    } else {
+        if(!st.imdbID){ toast('Sin IMDb ID — usa modo Calidad'); $('episodePanel').classList.add('visible'); return; }
+        $('sourceName').textContent = EMBED_SRC[0].name;
+        var wrap = $('srcWrap'); if(wrap) wrap.style.display = ''; curSrc = 0;
+        loadEmbed(st.imdbID, st.season, num);
+    }
+    $('playerTitle').textContent = st.title + ' — T' + st.season + 'E' + num + (title ? ': ' + title : '');
+    var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.add('visible');
+    updateEpNav(); setStatus($('movieStatus'), '', '');
+}
+
+function updateEpNav(){
+    if(!st) return;
+    var mx = (st.allEps[st.season] || []).length;
+    var pbtn = $('prevEpBtn'); var nBtn = $('nextEpBtn');
+    if(pBtn) pBtn.disabled = (st.season <= 1 && st.episode <= 1);
+    if(nBtn) nBtn.disabled = (st.season >= st.totalSeasons && st.episode >= mx);
+}
+
+var pBtn = $('prevEpBtn'); if(pBtn) pBtn.addEventListener('click', function(){
+    if(!st) return;
+    if(st.episode > 1){ var e = st.allEps[st.season] || []; playEpisode(st.episode - 1, e[st.episode - 2] ? e[st.episode - 2].Title : ''); }
+    else if(st.season > 1){ st.season--; updateSeasonNav(); loadSeason(st.season); var w = setInterval(function(){ var e = st.allEps[st.season]; if(e && e.length){ clearInterval(w); playEpisode(e.length, e[e.length - 1].Title || ''); } }, 200); }
+});
+var nBtn = $('nextEpBtn'); if(nBtn) nBtn.addEventListener('click', function(){
+    if(!st) return;
+    var mx = (st.allEps[st.season] || []).length;
+    if(st.episode < mx){ var e = st.allEps[st.season] || []; playEpisode(st.episode + 1, e[st.episode] ? e[st.episode].Title : ''); }
+    else if(st.season < st.totalSeasons){ st.season++; updateSeasonNav(); loadSeason(st.season); var w = setInterval(function(){ var e = st.allEps[st.season]; if(e && e.length){ clearInterval(w); playEpisode(1, e[0].Title || ''); } }, 200); }
+});
+var pSBtn = $('epPrevSeason'); if(pSBtn) pSBtn.addEventListener('click', function(){ if(st && st.season > 1) loadSeason(st.season - 1); });
+var nSBtn = $('epNextSeason'); if(nSBtn) nSBtn.addEventListener('click', function(){ if(st && st.season < st.totalSeasons) loadSeason(st.season + 1); });
+var clBtn = $('epCloseBtn'); if(clBtn) clBtn.addEventListener('click', function(){ $('episodePanel').classList.remove('visible'); $('movieResultsArea').style.display = 'block'; if(sd) $('movieDetailBar').classList.add('visible'); st = null; });
+
+/* ═══ LATINO ═══ */
+function doCuevanaSearch(){
+    var q = $('movieSearch').value.trim();
+    if(!q){ setStatus($('movieStatus'), 'Escribe algo para buscar', 'error'); return; }
+    hideAll(); $('movieSearchBtn').disabled = true;
+    setStatus($('movieStatus'), 'Buscando en SoloLatino...', 'loading');
+    fetch('/api/cuevana-search', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:q})})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){
+        $('movieSearchBtn').disabled = false;
+        if(d && d.error){ setStatus($('movieStatus'), d.error, 'error'); return; }
+        if(!d || !d.job_id){ setStatus($('movieStatus'), 'No se creó el trabajo', 'error'); return; }
+        pollCuevana(d.job_id);
+    })
+    .catch(function(e){ $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); });
+}
+
+function pollCuevana(jid){
+    var tries = 0, pendingStuck = 0;
+    var iv = setInterval(function(){
+        tries++;
+        fetch('/api/job-status/' + jid)
+        .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(j){
+            if(j.state === 'pending'){ pendingStuck++; if(j.progress) setStatus($('movieStatus'), j.progress, 'loading'); if(pendingStuck > 15){ clearInterval(iv); $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'El navegador tardó — intenta de nuevo', 'error'); } return; }
+            if(j.state === 'running'){ pendingStuck = 0; if(j.progress) setStatus($('movieStatus'), j.progress, 'loading'); return; }
+            clearInterval(iv); $('movieSearchBtn').disabled = false;
+            if(j.state === 'done'){
+                setStatus($('movieStatus'), 'Listo!', 'success');
+                if(j.results){ cueResults = j.results; renderCueGrid(); }
+                else if(j.embed_url){ $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = 'Reproduciendo...'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; loadCuevanaEmbed(j.embed_url); }
+                else if(j.episodes){ cueEps = j.episodes; cueSeasons = j.seasons || []; cueCurSeason = cueSeasons[0] || 1; cueCurEp = 1; showCueEpPanel(j.series_title || ''); $('movieResultsArea').style.display = 'block'; }
+                else { setStatus($('movieStatus'), 'Respuesta vacía', 'error'); }
+            } else { var errMsg = (j && j.error) || 'Error desconocido'; if(errMsg.length > 200) errMsg = errMsg.substring(0, 200) + '...'; setStatus($('movieStatus'), 'Error: ' + errMsg, 'error'); }
+        })
+        .catch(function(){ if(tries > 45){ clearInterval(iv); $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'Sin respuesta del servidor', 'error'); } });
+    }, 2000);
+}
+
+function renderCueGrid(){
+    var grid = $('movieGrid'); grid.innerHTML = '';
+    if(!cueResults || !cueResults.length){ $('movieResultsArea').style.display = 'block'; $('movieResultsCount').innerHTML = '<strong>0</strong> resultados'; $('moviePagination').innerHTML = ''; grid.innerHTML = '<div class="empty"><span class="empty-icon">🔍</span>Sin resultados</div>'; return; }
+    $('movieResultsCount').innerHTML = '<strong>' + cueResults.length + '</strong> resultados de SoloLatino'; $('moviePagination').innerHTML = '';
+    cueResults.forEach(function(r){
+        var cd = document.createElement('div'); cd.className = 'card';
+        var isS = r.type_lower === 'serie'; var bc = isS ? 'latino' : 'movie', bt = isS ? 'SERIE' : 'PELÍCULA';
+        var h = '<div class="card-poster">';
+        if(r.poster) h += '<img src="' + esc(r.poster) + '" alt="' + esc(r.title) + '" loading="lazy">';
+        else h += '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--dim);font-size:2rem">🎬</div>';
+        h += '</div><div class="card-badge ' + bc + '">' + esc(bt) + '</div>';
+        if(r.year) h += '<div class="card-year">' + esc(r.year) + '</div>';
+        h += '<div class="card-info"><div class="card-title" title="' + esc(r.title) + '">' + esc(r.title) + '</div><div class="card-sub"><span>' + (isS ? 'Serie' : 'Película') + '</span>';
+        if(r.year) h += '<span class="dot"></span><span>' + esc(r.year) + '</span>';
+        if(r.rating) h += '<span class="dot"></span><span>' + esc(r.rating) + '</span>';
+        h += '</div></div>'; cd.innerHTML = h;
+        cd.addEventListener('click', function(){ cueBaseUrl = r.url; if(isS) cueLoadSeries(r.url, r.title); else cueLoadMovie(r.url, r.title); });
+        grid.appendChild(cd);
+    });
+    $('movieResultsArea').style.display = 'block';
+}
+
+function cueLoadMovie(url, title){ hideAll(); $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = title || '...'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; setStatus($('movieStatus'), 'Cargando...', 'loading'); fetch('/api/cuevana-movie', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
+function cueLoadSeries(url, title){ hideAll(); setStatus($('movieStatus'), 'Cargando episodios...', 'loading'); fetch('/api/cuevana-series', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
+function cueLoadEpisode(url, title){ hideAll(); $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = title || 'Episodio'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; setStatus($('movieStatus'), 'Cargando...', 'loading'); fetch('/api/cuevana-episode', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
+
+function showCueEpPanel(title){ $('cueEpPanel').classList.add('visible'); $('cueEpTitle').textContent = title || 'Episodios'; renderCueSeasonTabs(); renderCueEpGrid(); updateCueNav(); }
+function renderCueSeasonTabs(){ var tabs = $('cueSeasonTabs'); tabs.innerHTML = ''; if(!cueSeasons || !cueSeasons.length) return; cueSeasons.forEach(function(s){ var t = document.createElement('button'); t.className = 's-tab' + (s === cueCurSeason ? ' active' : ''); t.textContent = 'Temporada ' + s; t.dataset.s = s; t.addEventListener('click', function(){ cueCurSeason = parseInt(this.dataset.s); renderCueEpGrid(); updateCueNav(); }); tabs.appendChild(t); }); }
+function renderCueEpGrid(){
+    var grid = $('cueEpGrid'); grid.innerHTML = '';
+    var filtered = (cueEps || []).filter(function(e){ return e.season === cueCurSeason; });
+    if(!filtered.length){ grid.innerHTML = '<div class="empty" style="grid-column:1/-1">Sin episodios en esta temporada</div>'; return; }
+    filtered.forEach(function(ep){
+        var c = document.createElement('div'); c.className = 'cue-ep-card' + (ep.episode === cueCurEp ? ' on' : '');
+        c.innerHTML = '<div class="cue-ep-thumb">' + (ep.thumb ? '<img src="' + esc(ep.thumb) + '" alt="">' : '') + '</div><div class="cue-ep-info"><div class="cue-ep-title">' + esc(ep.title) + '</div><div class="cue-ep-label">T' + ep.season + 'E' + ep.episode + '</div></div></div>';
+        c.addEventListener('click', function(){ var epUrl = cueBaseUrl.replace(/temporada-\d+-episodio-\d+/i, 'temporada-' + ep.season + '-episodio-' + ep.episode); cueCurEp = ep.episode; renderCueEpGrid(); cueLoadEpisode(epUrl, ep.title); });
+        grid.appendChild(c);
+    });
+}
+function updateCueNav(){ var pBtn = $('cuePrevS'); var nBtn = $('cueNextS'); if(pBtn) pBtn.disabled = cueCurSeason <= 1; var mx = cueSeasons && cueSeasons.length ? cueSeasons[cueSeasons.length - 1] : 1; if(nBtn) nBtn.disabled = cueCurSeason >= mx; }
+var cPBtn = $('cuePrevS'); if(cPBtn) cPBtn.addEventListener('click', function(){ if(cueCurSeason > 1){ cueCurSeason--; renderCueEpGrid(); updateCueNav(); } });
+var cNBtn = $('cueNextS'); if(cNBtn) cNBtn.addEventListener('click', function(){ var mx = cueSeasons && cueSeasons.length ? cueSeasons[cueSeasons.length - 1] : 1; if(cueCurSeason < mx){ cueCurSeason++; renderCueEpGrid(); updateCueNav(); } });
+var ccBtn = $('cueCloseEpBtn'); if(ccBtn) ccBtn.addEventListener('click', function(){ $('cueEpPanel').classList.remove('visible'); $('movieResultsArea').style.display = 'block'; });
+
+/* ═══ NAVIGATION ═══ */
+var bBtn = $('movieBackBtn'); if(bBtn) bBtn.addEventListener('click', function(){
+    movieIframe.src = 'about:blank'; $('moviePlayer').style.display = 'none'; sourceBar.classList.add('hidden');
+    if(mode === 'latino' && $('cueEpPanel').classList.contains('visible')){ $('cueEpPanel').classList.remove('visible'); $('movieResultsArea').style.display = 'block'; }
+    else if(mode !== 'latino' && st){ $('episodePanel').classList.add('visible'); renderEpGrid(st.allEps[st.season] || []); }
+    else { $('movieResultsArea').style.display = 'block'; if(sd) $('movieDetailBar').classList.add('visible'); }
+    st = null; setStatus($('movieStatus'), '', '');
+});
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && $('moviePlayer').style.display === 'block'){ var bBtn2 = $('movieBackBtn'); if(bBtn2) bBtn2.click(); } });
+
+function hideAll(){
+    $('movieResultsArea').style.display = 'none'; $('movieDetailBar').classList.remove('visible');
+    $('episodePanel').classList.remove('visible'); $('cueEpPanel').classList.remove('visible');
+    $('moviePlayer').style.display = 'none'; movieIframe.src = 'about:blank';
+    sourceBar.classList.add('hidden'); setStatus($('movieStatus'), '', '');
+}
+
+})();
+</script>
+</body>
+</html>
