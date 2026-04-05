@@ -1,0 +1,7 @@
+tunnel: 6a8a6cdf-2c81-4372-b9c9-547313cff5b1
+credentials-file: /home/bautistalombardi/.cloudflared/6a8a6cdf-2c81-4372-b9c9-547313cff5b1.json
+
+ingress:
+  - hostname: bautiai.ccwu.cc
+    service: http://localhost:5000
+  - service: http_status:404

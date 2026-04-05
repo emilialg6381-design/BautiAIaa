@@ -1,0 +1,9 @@
+# wsgi.py — Entry point para Gunicorn
+# NO ejecutar directamente, usar: gunicorn wsgi:app
+from server import app
+
+if __name__ == "__main__":
+    # Este archivo no se ejecuta directamente
+    # Para desarrollo usar: python server.py
+    # Para produccion usar: ./start.sh
+    raise SystemExit("Usar: gunicorn wsgi:app  o  ./start.sh")

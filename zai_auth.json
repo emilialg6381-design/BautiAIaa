@@ -1,0 +1,279 @@
+{
+  "cookies": [
+    {
+      "name": "acw_tc",
+      "value": "0a094e6617750893667033932e66b205f6692d10730afe954ecdabc45bd730",
+      "domain": "image.z.ai",
+      "path": "/",
+      "expires": 1775091167.197335,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "locale",
+      "value": "en",
+      "domain": "image.z.ai",
+      "path": "/",
+      "expires": 1806625491.948463,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cdn_sec_tc",
+      "value": "800ef99b17750893844443932e3765335f8b043498eeeef6e727a08ed3",
+      "domain": "chat.z.ai",
+      "path": "/",
+      "expires": 1775092984.948859,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "acw_tc",
+      "value": "0a0ccaf917750893846948653e5d31f83081f44f4a833ddc8657919541ab10",
+      "domain": "chat.z.ai",
+      "path": "/",
+      "expires": 1775091184.948906,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gcl_au",
+      "value": "1.1.1658109281.1775089387",
+      "domain": ".z.ai",
+      "path": "/",
+      "expires": 1782865387,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.376863547.1775089387",
+      "domain": ".z.ai",
+      "path": "/",
+      "expires": 1809649481.182096,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_octo",
+      "value": "GH1.1.1168957319.1775089394",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": 1806625394.205187,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cpu_bucket",
+      "value": "sm",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "preferred_color_mode",
+      "value": "light",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_device_id",
+      "value": "5b3fbeaff07530e4f29f42fba8707203",
+      "domain": "github.com",
+      "path": "/",
+      "expires": 1806625396.339885,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "tz",
+      "value": "America%2FMontevideo",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "saved_user_sessions",
+      "value": "249575520%3AMHQ8XwVk_xf6PNSdLPZPa20DO5Bz_d30Sq-Ly9L1ykjP3NmJ",
+      "domain": "github.com",
+      "path": "/",
+      "expires": 1782865466.510799,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "user_session",
+      "value": "MHQ8XwVk_xf6PNSdLPZPa20DO5Bz_d30Sq-Ly9L1ykjP3NmJ",
+      "domain": "github.com",
+      "path": "/",
+      "expires": 1776299066.510991,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__Host-user_session_same_site",
+      "value": "MHQ8XwVk_xf6PNSdLPZPa20DO5Bz_d30Sq-Ly9L1ykjP3NmJ",
+      "domain": "github.com",
+      "path": "/",
+      "expires": 1776299066.511045,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "tz",
+      "value": "America%2FMontevideo",
+      "domain": "github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "color_mode",
+      "value": "%7B%22color_mode%22%3A%22auto%22%2C%22light_theme%22%3A%7B%22name%22%3A%22light%22%2C%22color_mode%22%3A%22light%22%7D%2C%22dark_theme%22%3A%7B%22name%22%3A%22dark%22%2C%22color_mode%22%3A%22dark%22%7D%7D",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "logged_in",
+      "value": "yes",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": 1806625466.511204,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "dotcom_user",
+      "value": "rt6481163-maker",
+      "domain": ".github.com",
+      "path": "/",
+      "expires": 1806625466.511284,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "last_write_ms",
+      "value": "1775089473881",
+      "domain": "github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gh_sess",
+      "value": "gsMv8bFh5IsgTzbZN6e4OBm3NKecExDaBMXL%2FUIVMLLmpextvDi43%2BmDvGq1opXS8Paydh7XInosGcgOdTb3%2Bz3PL7D0alU%2Fh%2FRWmSJSMQfZQZfSykjq8V0Xrtz%2BwP3GvE89BEOT4DCXlk58sNE5D3t9b6%2BWuUqtkY3uA1jPOfTikxLhyd62gWXohtaV9XFIh6t1%2BjSgAao3WxFR9mo%2Fo0VbXFNinbUY%2FyxleLWs70o84ADaEZ6rqAd2T5cagBYV5fp7EAWMiXTqLzvk%2BRgnbnSsklIX%2FlMb6s1vx9mD5Ya3gOn%2BO7O16wxzhm7qsr4PJE2s6R2%2BOkg3BBrYnarFJdj%2BLmzNH1mRzQGrYsWwpfsAXwD43Xp7VNBYyi9dlD2DQweDKK1Q8eCUOpVvnQ9yzmoo4DjtD7A%2Fy%2FzYyuvX%2BB4Oqb4yggZ9jjh0nZX6a%2F28RtEvJt1ka7I%2FYF3eRG0s0Np3sHCMxgaOjCVPsLLGQ3EkrKJ2cmfy7bPNTE5lakls8O24s2g1hWOnjVO%2BFWblhc2iUc77ISYzIsbLoLJAynHH91JVqBKxu%2B41gKIEiawuyAFpiSKcAKW5RU%2Fo0dN8qmuZTSRAR5TTGDGd9U0m8JbIdAet5GOQYM12K9pxK9gK8ty4cc6M4z10bM9vODmnj%2BqrpaZtQweZYLZar5eze0lwoaAhWpXxY%2B0k6wbbWa8sQTYdeqQoWi2NxLgnKoE1xXdEx85QgZtx7jukV1SFIDt5hlLG4uIfFJYfFi8ylFbiNvdg%2BhLA5RWwx3ukI%2FICDIxL4sfhi2VD2549LIOEuiWUFxjAXu6WbNF7cHcDq%2FHXcaqzeiPO%2BxzU5fp%2BAU0Q94ZdjKPJ7AtT--cqn9Lsv2ppSYTqhs--pTOQl%2FqNPigBz6wr6%2BnVTw%3D%3D",
+      "domain": "github.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "oauth_id_token",
+      "value": "None",
+      "domain": "chat.z.ai",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "token",
+      "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNmY2Y3NzFiLTVmY2UtNDI4My05ZmYwLWFlNDVkNGQwNmZiMiIsImVtYWlsIjoicnQ2NDgxMTYzQGdtYWlsLmNvbSJ9.PfFdCQUGElah4w5R40jhRGtLiOVBtMJrhjZP9EoJehkHhy9gpWo2vV_QIa1VmeHz_ZtZVpi1DEaAvzViswTkYg",
+      "domain": "chat.z.ai",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_Z8QTHYBHP3",
+      "value": "GS2.1.s1775089387$o1$g1$t1775089488$j50$l0$h0",
+      "domain": ".z.ai",
+      "path": "/",
+      "expires": 1809649488.383788,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ssxmod_itna",
+      "value": "1-iqGxRWqmqGqeqAKi7tPGjxiQphxIx0KYDXDUqAjQGgjDFqAPqDHlm1DU28eVK_Gr2G51U=4ntDlPOnoaXKWO5q4MD1wDmYtW8BI45MSiDg=qw1YIjOmwNy2GSuhDheeAxjON_2YDQxY=DCqGSDDNDDEiKDxGXUkeqKxGGD0oDtfND3SiDi2bDzMTDtqD9txDFteDLKmnFmY0q1GKOYATDIfmVD0QDAMFDiT4dtxDgteD_txDM/qG2txyxuDDZQ/TDbET43mDXoDGhYDgQ2KMWupysPIBw6ABVF97jr4nr=ZiDb3ivpETMdco0Km0q4KxaA4eW_5CDi3iYKDmS4eWG4lixW0tUB=BB=7DW92xqOmDiT_ehwD35xGBksZkNM7d6oNW2qpxe7xeQ0di85Cn5tmxsixoj_yEQiYbtG3KYw4D",
+      "domain": ".z.ai",
+      "path": "/",
+      "expires": 1775091288,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "ssxmod_itna2",
+      "value": "1-iqGxRWqmqGqeqAKi7tPGjxiQphxIx0KYDXDUqAjQGgjDFqAPqDHlm1DU28eVK_Gr2G51U=4nYD==_0Ap=1RmEh1ySZdYwN3_41ybxD",
+      "domain": ".z.ai",
+      "path": "/",
+      "expires": 1775091288,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "session",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZmNmNzcxYi01ZmNlLTQyODMtOWZmMC1hZTQ1ZDRkMDZmYjIiLCJjbGllbnRfaWQiOiJjbGllbnRfbzNJNlg4c0U4U0N0VEhVV2RNSWh0ZyIsInNjb3BlcyI6WyJvcGVuaWQiLCJwcm9maWxlIiwiZW1haWwiXSwiaXNzIjoiaHR0cHM6Ly9vcGVud2VidWkuZXhhbXBsZS5jb20iLCJpYXQiOjE3NzUwODk0OTAsImV4cCI6MTc3NzY4MTQ5MCwianRpIjoiZjZUNDlydFRVdVN5Skp4WEQ5LXhZdyIsInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4ifQ.jz2KNWIcLm4Z_zKmPgaMSAdWo4R89pjpICmyv8n7jqc",
+      "domain": "image.z.ai",
+      "path": "/",
+      "expires": 1775694291.031117,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://image.z.ai",
+      "localStorage": [
+        {
+          "name": "auth_state",
+          "value": "002DkgXOcbOBDINqXPHhqA=="
+        },
+        {
+          "name": "auth-storage",
+          "value": "{\"state\":{\"user\":{\"userId\":\"3fcf771b-5fce-4283-9ff0-ae45d4d06fb2\",\"username\":\"rt6481163@gmail.com\",\"avatar\":\"\"}},\"version\":0}"
+        }
+      ]
+    }
+  ]
+}
