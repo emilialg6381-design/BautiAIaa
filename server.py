@@ -548,6 +548,9 @@ class SoloLatinoTask:
         except:
             self._prog("No play button found, continuing...")
 
+        # Wait a bit more for the iframe to load after clicking play
+        page.wait_for_timeout(3000)
+        
         embed = self._wait_for_iframe(page, 18)
         if not embed:
             raise Exception("No se encontro el reproductor del episodio")
@@ -565,8 +568,23 @@ class SoloLatinoTask:
                 const frames = document.querySelectorAll('iframe');
                 for (const f of frames) {
                     const src = f.src || '';
-                    if (src.length > 20 && !src.includes('about:blank') && !src.includes('javascript:')) {
+                    // Check for player domains like pelisserieshoy, embed, etc.
+                    if (src.length > 20 && 
+                        !src.includes('about:blank') && 
+                        !src.includes('javascript:') &&
+                        !src.includes('sololatino.net')) {
                         return src;
+                    }
+                }
+                // If no direct player found, check for nested iframes or data attributes
+                for (const f of frames) {
+                    const src = f.src || '';
+                    if (src.length > 20 && !src.includes('about:blank') && !src.includes('javascript:')) {
+                        // Try to get the actual player from inside this iframe's content
+                        // or return the src if it looks like a player URL
+                        if (src.includes('player.') || src.includes('embed.') || src.includes('f/')) {
+                            return src;
+                        }
                     }
                 }
                 return null;

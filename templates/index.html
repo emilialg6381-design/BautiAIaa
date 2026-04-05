@@ -283,7 +283,7 @@
             <div id="sourceBar" class="source-err hidden"></div>
             <div class="video-box">
                 <div class="v-load" id="embedLoading"><div class="spinner"></div><span>Cargando reproductor...</span></div>
-                <iframe id="movieIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="origin"></iframe>
+                <iframe id="movieIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="origin" allowfullscreen loading="lazy" style="border:none;width:100%;height:100%"></iframe>
             </div>
         </div>
     </div>
@@ -406,18 +406,27 @@ $('sourceBar').addEventListener('click', function(ev){ if(ev.target && ev.target
 
 function loadCuevanaEmbed(url){
     movieIframe.removeAttribute('sandbox');
-    $('sourceName').textContent = 'Cuevana';
+    $('sourceName').textContent = 'SoloLatino';
     var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none';
     var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible');
     movieIframe.src = 'about:blank';
     embedLoading.classList.remove('hidden');
     sourceBar.classList.add('hidden');
+    
+    // Set proper attributes for the player iframe
+    movieIframe.setAttribute('allowfullscreen', '');
+    movieIframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+    movieIframe.setAttribute('loading', 'lazy');
+    movieIframe.style.border = 'none';
+    movieIframe.style.width = '100%';
+    movieIframe.style.height = '100%';
+    
     movieIframe.src = url;
     var t = setTimeout(function(){
         if(!embedLoading.classList.contains('hidden')){
             embedLoading.classList.add('hidden');
             sourceBar.classList.remove('hidden');
-            sourceBar.innerHTML = '&#9888; <strong>Cuevana no respondio.</strong>';
+            sourceBar.innerHTML = '&#9888; <strong>Cargando reproductor...</strong>';
         }
     }, 20000);
     movieIframe.onload = function(){ clearTimeout(t); setTimeout(function(){ embedLoading.classList.add('hidden'); }, 1500); };
