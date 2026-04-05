@@ -614,6 +614,11 @@ def latino_movie():
 def latino_series():
     u = (request.json or {}).get('url', '').strip()
     if not u: return jsonify({"error": "URL vacia"}), 400
+    # Check if it's a movie URL or series URL
+    # Movie URLs typically don't have temporada/episodio patterns
+    if 'temporada' not in u.lower() and 'episodio' not in u.lower():
+        # It might be a movie, treat it as such
+        return jsonify({"job_id": _latino_job("movie", url=u)})
     return jsonify({"job_id": _latino_job("series", url=u)})
 
 @app.route('/api/cuevana-episode', methods=['POST'])
