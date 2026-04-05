@@ -786,7 +786,30 @@ function renderCueGrid(){
 }
 
 function cueLoadMovie(url, title){ hideAll(); $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = title || '...'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; setStatus($('movieStatus'), 'Cargando...', 'loading'); fetch('/api/cuevana-movie', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
-function cueLoadSeries(url, title){ hideAll(); setStatus($('movieStatus'), 'Cargando episodios...', 'loading'); fetch('/api/cuevana-series', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
+function cueLoadSeries(url, title){ 
+    // When clicking a series result, directly load season 1 episode 1
+    hideAll(); 
+    $('moviePlayer').style.display = 'block'; 
+    $('playerTitle').textContent = title || 'Serie'; 
+    var ctrl = $('playerEpControls'); 
+    if(ctrl) ctrl.classList.remove('visible'); 
+    var wrap = $('srcWrap'); 
+    if(wrap) wrap.style.display = 'none'; 
+    setStatus($('movieStatus'), 'Cargando episodio...', 'loading'); 
+    
+    // Remove trailing slash from URL and build episode URL
+    var cleanUrl = url.replace(/\/$/, '');
+    var episodeUrl = cleanUrl + '/temporada-1/episodio-1';
+    
+    fetch('/api/cuevana-episode', {
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body:JSON.stringify({url: episodeUrl})
+    })
+    .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); })
+    .catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); 
+}
 function cueLoadEpisode(url, title){ hideAll(); $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = title || 'Episodio'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; setStatus($('movieStatus'), 'Cargando...', 'loading'); fetch('/api/cuevana-episode', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:url})}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function(d){ if(d && d.job_id) pollCuevana(d.job_id); else setStatus($('movieStatus'), 'Error', 'error'); }).catch(function(e){ setStatus($('movieStatus'), 'Error: ' + e.message, 'error'); }); }
 
 function showCueEpPanel(title){ $('cueEpPanel').classList.add('visible'); $('cueEpTitle').textContent = title || 'Episodios'; renderCueSeasonTabs(); renderCueEpGrid(); updateCueNav(); }
