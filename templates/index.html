@@ -701,12 +701,25 @@ function pollCuevana(jid){
                 setStatus($('movieStatus'), 'Listo!', 'success');
                 if(j.results){ cueResults = j.results; renderCueGrid(); }
                 else if(j.embed_url){ $('moviePlayer').style.display = 'block'; $('playerTitle').textContent = 'Reproduciendo...'; var ctrl = $('playerEpControls'); if(ctrl) ctrl.classList.remove('visible'); var wrap = $('srcWrap'); if(wrap) wrap.style.display = 'none'; loadCuevanaEmbed(j.embed_url); }
-                else if(j.episodes){ cueEps = j.episodes; cueSeasons = j.seasons || []; cueCurSeason = cueSeasons[0] || 1; cueCurEp = 1; showCueEpPanel(j.series_title || ''); $('movieResultsArea').style.display = 'block'; }
+                else if(j.episodes){ cueEps = j.episodes; cueSeasons = j.seasons || []; cueCurSeason = cueSeasons[0] || 1; cueCurEp = 1; showCueEpPanel(j.series_title || ''); $('movieResultsArea').style.display = 'block'; autoPlayFirstEpisode(); }
                 else { setStatus($('movieStatus'), 'Respuesta vacía', 'error'); }
             } else { var errMsg = (j && j.error) || 'Error desconocido'; if(errMsg.length > 200) errMsg = errMsg.substring(0, 200) + '...'; setStatus($('movieStatus'), 'Error: ' + errMsg, 'error'); }
         })
         .catch(function(){ if(tries > 45){ clearInterval(iv); $('movieSearchBtn').disabled = false; setStatus($('movieStatus'), 'Sin respuesta del servidor', 'error'); } });
     }, 2000);
+}
+
+// Auto-select first season and first episode, then play
+function autoPlayFirstEpisode(){
+    if(cueSeasons && cueSeasons.length > 0 && cueEps && cueEps.length > 0){
+        cueCurSeason = cueSeasons[0];
+        var firstEp = cueEps.find(function(e){ return e.season === cueCurSeason; });
+        if(firstEp){
+            cueCurEp = firstEp.episode;
+            var epUrl = firstEp.url.startsWith('/') ? firstEp.url : '/' + firstEp.url;
+            setTimeout(function(){ cueLoadEpisode(epUrl, firstEp.title); }, 500);
+        }
+    }
 }
 
 function renderCueGrid(){
@@ -744,7 +757,7 @@ function renderCueEpGrid(){
     filtered.forEach(function(ep){
         var c = document.createElement('div'); c.className = 'cue-ep-card' + (ep.episode === cueCurEp ? ' on' : '');
         c.innerHTML = '<div class="cue-ep-thumb">' + (ep.thumb ? '<img src="' + esc(ep.thumb) + '" alt="">' : '') + '</div><div class="cue-ep-info"><div class="cue-ep-title">' + esc(ep.title) + '</div><div class="cue-ep-label">T' + ep.season + 'E' + ep.episode + '</div></div></div>';
-        c.addEventListener('click', function(){ var epUrl = cueBaseUrl.replace(/temporada-\d+-episodio-\d+/i, 'temporada-' + ep.season + '-episodio-' + ep.episode); cueCurEp = ep.episode; renderCueEpGrid(); cueLoadEpisode(epUrl, ep.title); });
+        c.addEventListener('click', function(){ var epUrl = ep.url.startsWith('/') ? ep.url : '/' + ep.url; cueCurEp = ep.episode; renderCueEpGrid(); cueLoadEpisode(epUrl, ep.title); });
         grid.appendChild(c);
     });
 }
