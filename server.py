@@ -350,7 +350,7 @@ class SoloLatinoTask:
                         return route.abort()
                     return route.continue_()
                 
-                page.route("**/*", handle_route)
+                self.page.route("**/*", handle_route)
 
                 if self.action == "search":
                     self._search(self.page)
