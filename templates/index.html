@@ -716,8 +716,40 @@ function autoPlayFirstEpisode(){
         var firstEp = cueEps.find(function(e){ return e.season === cueCurSeason; });
         if(firstEp){
             cueCurEp = firstEp.episode;
+            // Load the iframe directly with the episode URL from SoloLatino
             var epUrl = firstEp.url.startsWith('/') ? firstEp.url : '/' + firstEp.url;
-            setTimeout(function(){ cueLoadEpisode(epUrl, firstEp.title); }, 500);
+            setTimeout(function(){ 
+                // Call the backend to get the embed URL for this episode
+                fetch('/api/cuevana-episode', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({url: epUrl})
+                })
+                .then(function(r){ return r.json(); })
+                .then(function(d){ 
+                    if(d && d.job_id) {
+                        // Poll for the embed URL
+                        var tries = 0;
+                        var iv = setInterval(function(){
+                            tries++;
+                            fetch('/api/job-status/' + d.job_id)
+                            .then(function(r){ return r.json(); })
+                            .then(function(j){
+                                if(j.state === 'done' && j.embed_url){
+                                    clearInterval(iv);
+                                    $('moviePlayer').style.display = 'block';
+                                    $('playerTitle').textContent = firstEp.title || 'Episodio';
+                                    loadCuevanaEmbed(j.embed_url);
+                                } else if(j.state === 'error' || tries > 45){
+                                    clearInterval(iv);
+                                    setStatus($('movieStatus'), 'Error al cargar episodio', 'error');
+                                }
+                            })
+                            .catch(function(){ if(tries > 45){ clearInterval(iv); setStatus($('movieStatus'), 'Sin respuesta', 'error'); } });
+                        }, 2000);
+                    }
+                });
+            }, 500);
         }
     }
 }
@@ -728,7 +760,7 @@ function renderCueGrid(){
     $('movieResultsCount').innerHTML = '<strong>' + cueResults.length + '</strong> resultados de SoloLatino'; $('moviePagination').innerHTML = '';
     cueResults.forEach(function(r){
         var cd = document.createElement('div'); cd.className = 'card';
-        var isS = r.type_lower === 'serie'; var bc = isS ? 'latino' : 'movie', bt = isS ? 'SERIE' : 'PELÍCULA';
+        var isS = r.type === 'series'; var bc = isS ? 'latino' : 'movie', bt = isS ? 'SERIE' : 'PELÍCULA';
         var h = '<div class="card-poster">';
         if(r.poster) h += '<img src="' + esc(r.poster) + '" alt="' + esc(r.title) + '" loading="lazy">';
         else h += '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--dim);font-size:2rem">🎬</div>';
