@@ -69,6 +69,22 @@ def _fix_urls(content, base):
         content = content.replace(attr + '/', attr + base + '/')
     return content
 
+def _format_sololatino_episode_url(series_url, season, episode):
+    """
+    Formats a SoloLatino series URL into a specific episode URL.
+    
+    Args:
+        series_url: Base series URL (e.g., '/serie/el-maravillosamente-extrano-mundo-de-gumball')
+        season: Season number (int or string)
+        episode: Episode number (int or string)
+    
+    Returns:
+        Formatted episode URL (e.g., '/serie/el-maravillosamente-extrano-mundo-de-gumball/temporada-1/episodio-1')
+    """
+    # Remove trailing slash if present
+    series_url = series_url.rstrip('/')
+    return f"{series_url}/temporada-{season}/episodio-{episode}"
+
 def _proxy_embed(urls):
     for url in urls:
         try:
